@@ -16,7 +16,7 @@ type Warehouse struct {
 	Trucks    []Truck
 }
 
-func (w Warehouse) countLifeTime() {
+func (w Warehouse) decountLifeTime() {
 	w.Lifetime--
 }
 
