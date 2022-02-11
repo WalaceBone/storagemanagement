@@ -11,3 +11,14 @@ type Package struct {
 	Pos    Position
 	Name   string
 }
+
+func NewPackage(w, x, y uint, name string) Package {
+	return Package{
+		Weight: w,
+		Pos: Position{
+			x: x,
+			y: y,
+		},
+		Name: name,
+	}
+}
