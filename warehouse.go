@@ -16,14 +16,14 @@ type Warehouse struct {
 	Trucks    []Truck
 }
 
-func (p Position) Add(x, y uint) {
-	p.x += x
-	p.y += y
+func (p Position) Add(pos Position) {
+	p.x += pos.x
+	p.y += pos.y
 }
 
-func (p Position) Sub(x, y uint) {
+func (p Position) Sub(pos Position) {
 	if p.x > 0 && p.y > 0 {
-		p.x -= x
-		p.y -= y
+		p.x -= pos.x
+		p.y -= pos.y
 	}
 }
