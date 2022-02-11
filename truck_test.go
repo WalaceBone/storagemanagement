@@ -51,5 +51,11 @@ func TestUpdateStatus(t *testing.T) {
 }
 
 func TestLoadPackage(t *testing.T) {
-
+	p := NewPackage(YELLOW, 100, 100, "package")
+	truck := NewTruck(1000, 100, 100, 1000, "truckname")
+	l := len(truck.Packages)
+	truck.loadPackage(p)
+	if l+1 != len(truck.Packages) {
+		t.Errorf("Len wanted %d but got %d\n", l+1, len(truck.Packages))
+	}
 }
