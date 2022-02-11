@@ -15,3 +15,15 @@ type Warehouse struct {
 	Forklifts []Forklift
 	Trucks    []Truck
 }
+
+func (p Position) Add(x, y uint) {
+	p.x += x
+	p.y += y
+}
+
+func (p Position) Sub(x, y uint) {
+	if p.x > 0 && p.y > 0 {
+		p.x -= x
+		p.y -= y
+	}
+}
