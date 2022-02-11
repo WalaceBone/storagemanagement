@@ -22,3 +22,8 @@ func NewPackage(w, x, y uint, name string) Package {
 		Name: name,
 	}
 }
+
+func (p Package) updatePosition(x, y uint) {
+	p.Pos.x += x
+	p.Pos.y += y
+}
