@@ -1,11 +1,11 @@
 package main
 
 type Position struct {
-	x, y int
+	x, y uint
 }
 
 type Size struct {
-	w, l int
+	w, l uint
 }
 
 type Warehouse struct {
