@@ -16,6 +16,10 @@ type Warehouse struct {
 	Trucks    []Truck
 }
 
+func (w Warehouse) countLifeTime() {
+	w.Lifetime--
+}
+
 func (p Position) Add(pos Position) {
 	p.x += pos.x
 	p.y += pos.y
