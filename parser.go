@@ -16,6 +16,7 @@ func parseInt(str string) (int, error) {
 			return 0, errors.New("Invalid integer")
 		}
 	}
+
 	return strconv.Atoi(str)
 }
 
@@ -30,25 +31,24 @@ func (p Parser) parseSettings(lines []string) error {
 		if err != nil {
 			return err
 		}
-		pos := Position{xPos, yPos}
+		pos := Position{uint(xPos), uint(yPos)}
 		if index == 0 {
 			lifetime, err := parseInt(params[2])
 			if err != nil {
 				return err
 			}
-			p.warehouse.Size = Size{xPos, yPos}
+			p.warehouse.Size = Size{uint(xPos), uint(yPos)}
 			p.warehouse.Lifetime = uint(lifetime)
 		}
 		switch len(params) {
 		case 3:
 			p.warehouse.Forklifts = append(p.warehouse.Forklifts, Forklift{pos, Package{}, FStatus("WAIT"), params[0]})
 		case 4:
-			weightInt, err := parseInt(params[3])
+			weight, err := parseInt(params[3])
 			if err != nil {
 				return err
 			}
-			weight := weight(weightInt)
-			p.warehouse.Packages = append(p.warehouse.Packages, Package{weight, pos, params[0]})
+			p.warehouse.Packages = append(p.warehouse.Packages, NewPackage(uint(weight), uint(xPos), uint(yPos), params[0]))
 		case 5:
 			//p.warehouse.Trucks = append(p.warehouse.Trucks, Truck{pos, Package{}, FStatus("WAIT"), params[0]})
 		}
