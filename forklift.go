@@ -13,4 +13,5 @@ type Forklift struct {
 	Pos     Position
 	Package Package
 	Status  FStatus
+	Name    string
 }

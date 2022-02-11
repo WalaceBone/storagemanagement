@@ -13,4 +13,5 @@ type Truck struct {
 	Capacity uint
 	Pos      Position
 	Cooldown uint
+	Name     string
 }
