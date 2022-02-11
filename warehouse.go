@@ -9,8 +9,9 @@ type Size struct {
 }
 
 type Warehouse struct {
-	Size     Size
-	Lifetime uint
-	Packages []Package
-	Forklift []Forklift
+	Size      Size
+	Lifetime  uint
+	Packages  []Package
+	Forklifts []Forklift
+	Trucks    []Truck
 }
