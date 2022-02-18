@@ -26,7 +26,7 @@ linters:
     # level 2 : previous step but more strict.
     - "megacheck"
     # level 3 : error handling.
-    - "errcheck"
+    #- "errcheck"
     - "goerr113"
     - "wrapcheck"
     - "errchkjson"
