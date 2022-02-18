@@ -22,13 +22,16 @@ func main() {
 
 	scanner := bufio.NewScanner(file)
 	scanner.Split(bufio.ScanLines)
-	var lines []string
+	lines := make([]string, 0)
 	for scanner.Scan() {
 		lines = append(lines, scanner.Text())
 	}
 	file.Close()
 
-	var wh = Warehouse{}
-	parser := Parser{&wh}
-	parser.parseSettings(lines)
+	parser := Parser{}
+	warehouse, err := parser.parseSettings(lines)
+	if err != nil {
+		fmt.Errorf("error : %s\n", err)
+	}
+	Simulation(warehouse)
 }

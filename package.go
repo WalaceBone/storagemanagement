@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 const (
 	YELLOW = 100
 	GREEN  = 200
@@ -26,4 +28,10 @@ func NewPackage(w, x, y uint, name string) Package {
 func (p Package) updatePosition(x, y uint) {
 	p.Pos.x += x
 	p.Pos.y += y
+}
+
+func (p Package) Dump() {
+	fmt.Printf("\tName: %s\n", p.Name)
+	fmt.Printf("\tWeight: %d\n", p.Weight)
+	fmt.Printf("\tPosition: [%d,%d]\n", p.Pos.x, p.Pos.y)
 }

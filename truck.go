@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 type TStatus string
 
 const (
@@ -9,7 +11,7 @@ const (
 
 type Truck struct {
 	Status          TStatus
-	Packages        []Package
+	Packages        []*Package
 	Capacity        uint
 	Pos             Position
 	Cooldown        uint
@@ -20,7 +22,7 @@ type Truck struct {
 func NewTruck(cd, x, y, cap uint, name string) Truck {
 	return Truck{
 		Status:   WAITING,
-		Packages: make([]Package, 1),
+		Packages: nil,
 		Capacity: cap,
 		Pos: Position{
 			x: x,
@@ -36,7 +38,7 @@ func (t *Truck) updateStatus(s TStatus) {
 	t.Status = s
 }
 
-func (t *Truck) loadPackage(p Package) {
+func (t *Truck) loadPackage(p *Package) {
 	t.Packages = append(t.Packages, p)
 }
 
@@ -54,4 +56,8 @@ func (t *Truck) updateCD() {
 	} else {
 		t.CurrentCooldown = t.Cooldown
 	}
+}
+
+func (t Truck) Dump() {
+	fmt.Printf("%+v\n\n", t)
 }

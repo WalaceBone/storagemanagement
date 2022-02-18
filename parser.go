@@ -7,7 +7,20 @@ import (
 )
 
 type Parser struct {
-	warehouse *Warehouse
+}
+
+func parseWeight(w string) int {
+	w = strings.ToUpper(w)
+	if w == "GREEN" {
+		return GREEN
+	}
+	if w == "YELLOW" {
+		return YELLOW
+	}
+	if w == "BLUE" {
+		return BLUE
+	}
+	return -1
 }
 
 func parseInt(str string) (uint, error) {
@@ -20,43 +33,71 @@ func parseInt(str string) (uint, error) {
 	return uint(intValue), err
 }
 
-func (p Parser) parseSettings(lines []string) error {
+func (p Parser) parseSettings(lines []string) (*Warehouse, error) {
+	w := Warehouse{}
 	for index, line := range lines {
 		params := strings.Split(line, " ")
-		xPos, err := parseInt(params[0])
-		if err != nil {
-			return err
-		}
-		yPos, err := parseInt(params[1])
-		if err != nil {
-			return err
-		}
-		pos := Position{xPos, yPos}
 		if index == 0 {
+			x, err := parseInt(params[0])
+			if err != nil {
+				return nil, err
+			}
+			y, err := parseInt(params[1])
+			if err != nil {
+				return nil, err
+			}
 			lifetime, err := parseInt(params[2])
 			if err != nil {
-				return err
+				return nil, err
 			}
-			p.warehouse.Size = Size{xPos, yPos}
-			p.warehouse.Lifetime = lifetime
-		}
-		switch len(params) {
-		case 3:
-			p.warehouse.Forklifts = append(p.warehouse.Forklifts, Forklift{pos, Package{}, FStatus("WAIT"), params[0]})
-		case 4:
-			weight, err := parseInt(params[3])
-			if err != nil {
-				return err
+			w.Size = Size{x, y}
+			w.Lifetime = lifetime
+		} else {
+			switch len(params) {
+			case 3:
+				x, err := parseInt(params[1])
+				if err != nil {
+					return nil, err
+				}
+				y, err := parseInt(params[2])
+				if err != nil {
+					return nil, err
+				}
+				w.addForklift(NewForklift(x, y, params[0]))
+				//p.warehouse.Forklifts = append(p.warehouse.Forklifts, NewForklift(pos.x, pos.y, params[0]))
+			case 4:
+				weight := parseWeight(params[3])
+				if weight == -1 {
+					return nil, errors.New("invalid Weight")
+				}
+				x, err := parseInt(params[1])
+				if err != nil {
+					return nil, err
+				}
+				y, err := parseInt(params[2])
+				if err != nil {
+					return nil, err
+				}
+				w.addPackage(NewPackage(uint(weight), x, y, params[0]))
+				//p.warehouse.Packages = append(p.warehouse.Packages, )
+			case 5:
+				capacity, err := parseInt(params[3])
+				if err != nil {
+					return nil, err
+				}
+				cooldown, err := parseInt(params[4])
+				x, err := parseInt(params[1])
+				if err != nil {
+					return nil, err
+				}
+				y, err := parseInt(params[2])
+				if err != nil {
+					return nil, err
+				}
+				w.addTruck(NewTruck(cooldown, x, y, capacity, params[0]))
+				//p.warehouse.Trucks = append(p.warehouse.Trucks, )
 			}
-			p.warehouse.Packages = append(p.warehouse.Packages, NewPackage(weight, xPos, yPos, params[0]))
-		case 5:
-			capacity, err := parseInt(params[3])
-			if err != nil {
-				return err
-			}
-			cooldown, err := parseInt(params[4])
-			p.warehouse.Trucks = append(p.warehouse.Trucks, NewTruck(cooldown, xPos, yPos, capacity, params[0]))
 		}
 	}
-	return nil
+	return &w, nil
 }
