@@ -6,7 +6,7 @@ func TestNewTruck(t *testing.T) {
 	truck := NewTruck(1000, 100, 100, 1000, "truckname")
 	testTruck := Truck{
 		Status:   WAITING,
-		Packages: make([]Package, 1),
+		Packages: make([]*Package, 0),
 		Capacity: 1000,
 		Pos: Position{
 			x: 100,
@@ -54,7 +54,7 @@ func TestLoadPackage(t *testing.T) {
 	p := NewPackage(YELLOW, 100, 100, "package")
 	truck := NewTruck(1000, 100, 100, 1000, "truckname")
 	l := len(truck.Packages)
-	truck.loadPackage(p)
+	truck.loadPackage(&p)
 	if l+1 != len(truck.Packages) {
 		t.Errorf("Len wanted %d but got %d\n", l+1, len(truck.Packages))
 	}
