@@ -1,31 +1,37 @@
 package main
 
-import "time"
+import (
+	"fmt"
+	"math/rand"
+	"time"
+)
 
 //Simulation Simulate the warehouse and it's actions
-func Simulation(w *Warehouse) error {
+func (w *Warehouse) Simulation() error {
+
+	r := rand.New(rand.NewSource(time.Now().Unix()))
 
 	for w.IsSimulationComplete() == false {
-
-		for _, fork := range w.Forklifts {
-			go ForkliftSimulation(fork)
+		for i, _ := range w.Forklifts {
+			w.move(r.Intn(4), &w.Forklifts[i])
 		}
-		for _, truck := range w.Trucks {
-			go TruckSimulation(truck)
-		}
-
 		w.decountLifeTime()
-		w.DumpTurn()
-		time.Sleep(500)
+		w.DumpMap()
+		fmt.Printf("\n")
+		time.Sleep(1 * time.Second)
 	}
 
 	return nil
 }
 
-func ForkliftSimulation(f *Forklift) {
+func (w *Warehouse) findNextPackage(f *Forklift) {
+
+}
+
+func (w *Warehouse) ForkliftSimulation(f *Forklift) {
 	f.Dump()
 }
 
-func TruckSimulation(t *Truck) {
+func (w *Warehouse) TruckSimulation(t *Truck) {
 	t.Dump()
 }

@@ -9,13 +9,13 @@ const (
 )
 
 type Package struct {
-	Weight uint
+	Weight int
 	Pos    Position
 	Name   string
 }
 
-func NewPackage(w, x, y uint, name string) *Package {
-	return &Package{
+func NewPackage(w, x, y int, name string) Package {
+	return Package{
 		Weight: w,
 		Pos: Position{
 			x: x,
@@ -25,7 +25,7 @@ func NewPackage(w, x, y uint, name string) *Package {
 	}
 }
 
-func (p Package) updatePosition(x, y uint) {
+func (p Package) updatePosition(x, y int) {
 	p.Pos.x += x
 	p.Pos.y += y
 }

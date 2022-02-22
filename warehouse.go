@@ -2,32 +2,44 @@ package main
 
 import "fmt"
 
-type Position struct {
-	x, y uint
+type WarehouseCell struct {
+	F *Forklift
+	T *Truck
+	P *Package
 }
 
 type Size struct {
-	w, l uint
+	x, y int
 }
 
 type Warehouse struct {
 	Size        Size
-	Lifetime    uint
-	CurrentTurn uint
-	Packages    []*Package
-	Forklifts   []*Forklift
-	Trucks      []*Truck
+	Lifetime    int
+	CurrentTurn int
+	Map         [][]WarehouseCell
+	Packages    []Package
+	Forklifts   []Forklift
+	Trucks      []Truck
+}
+
+func initMap(x, y int) [][]WarehouseCell {
+	w := make([][]WarehouseCell, y)
+	for i := 0; i < x; i++ {
+		w[i] = make([]WarehouseCell, x)
+	}
+	return w
 }
 
 //NewWarehouse
-func NewWarehouse(w, l, lifetime uint) Warehouse {
+func NewWarehouse(x, y, lifetime int) Warehouse {
 	return Warehouse{
 		Size: Size{
-			w: w,
-			l: l,
+			x: x,
+			y: y,
 		},
 		Lifetime:    lifetime,
 		CurrentTurn: 0,
+		Map:         initMap(int(x), int(y)),
 		Packages:    nil,
 		Forklifts:   nil,
 		Trucks:      nil,
@@ -42,46 +54,37 @@ func (w *Warehouse) decountLifeTime() {
 	w.CurrentTurn++
 }
 
-func (p Position) Add(pos Position) {
-	p.x += pos.x
-	p.y += pos.y
-}
-
-func (p Position) Sub(pos Position) {
-	if p.x > 0 && p.y > 0 {
-		p.x -= pos.x
-		p.y -= pos.y
-	}
-}
-
-func (w *Warehouse) addTruck(t *Truck) error {
+func (w *Warehouse) addTruck(t Truck) error {
 	if w.Trucks == nil {
-		w.Trucks = make([]*Truck, 0)
+		w.Trucks = make([]Truck, 0)
 	}
 	w.Trucks = append(w.Trucks, t)
+	w.Map[t.Pos.x][t.Pos.y].T = &w.Trucks[len(w.Trucks)-1]
 	return nil
 }
 
-func (w *Warehouse) addPackage(p *Package) error {
+func (w *Warehouse) addPackage(p Package) error {
 	if w.Packages == nil {
-		w.Packages = make([]*Package, 0)
+		w.Packages = make([]Package, 0)
 	}
 	w.Packages = append(w.Packages, p)
+	w.Map[p.Pos.x][p.Pos.y].P = &w.Packages[len(w.Packages)-1]
 	return nil
 }
 
-func (w *Warehouse) addForklift(f *Forklift) error {
+func (w *Warehouse) addForklift(f Forklift) error {
 	if w.Forklifts == nil {
-		w.Forklifts = make([]*Forklift, 0)
+		w.Forklifts = make([]Forklift, 0)
 	}
 	w.Forklifts = append(w.Forklifts, f)
+	w.Map[f.Pos.x][f.Pos.y].F = &w.Forklifts[len(w.Forklifts)-1]
 	return nil
 }
 
 //Dump
 func (w Warehouse) Dump() {
 	fmt.Printf("Warehouse\n")
-	fmt.Printf("\tSize: [%d,%d]\n", w.Size.w, w.Size.l)
+	fmt.Printf("\tSize: [%d,%d]\n", w.Size.x, w.Size.y)
 	fmt.Printf("\tLifetime: %d\n", w.Lifetime)
 	fmt.Printf("\tCurrent Turn: %d\n", w.CurrentTurn)
 	fmt.Printf("\nForklifts:\n")
@@ -97,6 +100,26 @@ func (w Warehouse) Dump() {
 	for _, p := range w.Packages {
 		p.Dump()
 	}
+	w.DumpMap()
+}
+
+func (w Warehouse) DumpMap() {
+	for _, cells := range w.Map {
+		for _, c := range cells {
+			if c.F != nil {
+				fmt.Printf("[F] ")
+			}
+			if c.T != nil {
+				fmt.Printf("[T] ")
+			}
+			if c.P != nil {
+				fmt.Printf("[P] ")
+			} else {
+				fmt.Printf("[ ] ")
+			}
+		}
+		fmt.Printf("\n")
+	}
 }
 
 //DumpTurn
@@ -109,4 +132,34 @@ func (w Warehouse) DumpTurn() {
 		c, _ := t.IsFull()
 		fmt.Printf("%s %s %d/%d\n", t.Name, t.Status, c, t.Capacity)
 	}
+}
+
+func (w *Warehouse) move(d int, f *Forklift) error {
+	switch d {
+	case 0:
+		if f.Pos.x-1 >= 0 {
+			w.Map[f.Pos.x][f.Pos.y].F = nil
+			f.Pos.Up()
+			w.Map[f.Pos.x][f.Pos.y].F = f
+		}
+	case 1:
+		if f.Pos.y+1 < w.Size.y {
+			w.Map[f.Pos.x][f.Pos.y].F = nil
+			f.Pos.Right()
+			w.Map[f.Pos.x][f.Pos.y].F = f
+		}
+	case 2:
+		if f.Pos.x+1 < w.Size.x {
+			w.Map[f.Pos.x][f.Pos.y].F = nil
+			f.Pos.Down()
+			w.Map[f.Pos.x][f.Pos.y].F = f
+		}
+	case 3:
+		if f.Pos.y-1 >= 0 {
+			w.Map[f.Pos.x][f.Pos.y].F = nil
+			f.Pos.Left()
+			w.Map[f.Pos.x][f.Pos.y].F = f
+		}
+	}
+	return nil
 }

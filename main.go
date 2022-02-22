@@ -6,6 +6,38 @@ import (
 	"os"
 )
 
+/*func main() {
+
+	i := [3]int{4, 2, 1}
+	var p *int
+
+	p = &i[0]
+	fmt.Printf("%d\n", i[0])
+	fmt.Printf("%d\n", *p)
+	i[0] = 2
+	fmt.Printf("%d\n", i[0])
+	fmt.Printf("%d\n", *p)
+	*p = 7
+
+	fmt.Printf("%d\n", i[0])
+	fmt.Printf("%d\n", *p)
+
+	packages := [1]Package{}
+	packages[0] = NewPackage(0, 0, 0, "Toto")
+
+	var w WarehouseCell
+
+	w.P = &packages[0]
+
+	packages[0].Dump()
+	w.P.Dump()
+
+	packages[0].Name = "LULU"
+
+	packages[0].Dump()
+	w.P.Dump()
+}*/
+
 func main() {
 	args := os.Args
 	if len(args) != 2 {
@@ -33,6 +65,11 @@ func main() {
 	if err != nil {
 		fmt.Errorf("error : %s\n", err)
 	}
-	//warehouse.Dump()
-	Simulation(warehouse)
+	/*	warehouse.Dump()
+		warehouse.Forklifts[0].Dump()
+		warehouse.move(2, &warehouse.Forklifts[0])
+		warehouse.Forklifts[0].Dump()
+		warehouse.DumpMap()*/
+
+	warehouse.Simulation()
 }

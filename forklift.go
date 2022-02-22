@@ -19,8 +19,8 @@ type Forklift struct {
 }
 
 //NewForklift
-func NewForklift(x, y uint, name string) *Forklift {
-	return &Forklift{
+func NewForklift(x, y int, name string) Forklift {
+	return Forklift{
 		Pos: Position{
 			x: x,
 			y: y,
@@ -28,6 +28,19 @@ func NewForklift(x, y uint, name string) *Forklift {
 		Package: nil,
 		Status:  WAIT,
 		Name:    name,
+	}
+}
+
+func (f *Forklift) move(d int) {
+	switch d {
+	case 0:
+		f.Pos.Up()
+	case 1:
+		f.Pos.Right()
+	case 2:
+		f.Pos.Down()
+	case 3:
+		f.Pos.Left()
 	}
 }
 

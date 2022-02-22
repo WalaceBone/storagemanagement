@@ -23,14 +23,14 @@ func parseWeight(w string) int {
 	return -1
 }
 
-func parseInt(str string) (uint, error) {
+func parseInt(str string) (int, error) {
 	for index := 0; index < len(str); index += 1 {
 		if str[index] < '0' || str[index] > '9' {
 			return 0, errors.New("Invalid integer")
 		}
 	}
 	intValue, err := strconv.Atoi(str)
-	return uint(intValue), err
+	return int(intValue), err
 }
 
 func (p Parser) parseSettings(lines []string) (*Warehouse, error) {
@@ -50,8 +50,7 @@ func (p Parser) parseSettings(lines []string) (*Warehouse, error) {
 			if err != nil {
 				return nil, err
 			}
-			w.Size = Size{x, y}
-			w.Lifetime = lifetime
+			w = NewWarehouse(x, y, lifetime)
 		} else {
 			switch len(params) {
 			case 3:
@@ -78,7 +77,7 @@ func (p Parser) parseSettings(lines []string) (*Warehouse, error) {
 				if err != nil {
 					return nil, err
 				}
-				w.addPackage(NewPackage(uint(weight), x, y, params[0]))
+				w.addPackage(NewPackage(int(weight), x, y, params[0]))
 				//p.warehouse.Packages = append(p.warehouse.Packages, )
 			case 5:
 				capacity, err := parseInt(params[3])

@@ -12,15 +12,15 @@ const (
 type Truck struct {
 	Status          TStatus
 	Packages        []*Package
-	Capacity        uint
+	Capacity        int
 	Pos             Position
-	Cooldown        uint
-	CurrentCooldown uint
+	Cooldown        int
+	CurrentCooldown int
 	Name            string
 }
 
-func NewTruck(cd, x, y, cap uint, name string) *Truck {
-	return &Truck{
+func NewTruck(cd, x, y, cap int, name string) Truck {
+	return Truck{
 		Status:   WAITING,
 		Packages: nil,
 		Capacity: cap,
@@ -42,8 +42,8 @@ func (t *Truck) loadPackage(p *Package) {
 	t.Packages = append(t.Packages, p)
 }
 
-func (t Truck) IsFull() (uint, bool) {
-	var currentCap uint
+func (t Truck) IsFull() (int, bool) {
+	var currentCap int
 	for _, p := range t.Packages {
 		currentCap = currentCap + p.Weight
 	}
