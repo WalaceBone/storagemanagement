@@ -1,19 +1,22 @@
 package main
 
+import "time"
+
 //Simulation Simulate the warehouse and it's actions
 func Simulation(w *Warehouse) error {
 
 	for w.IsSimulationComplete() == false {
 
 		for _, fork := range w.Forklifts {
-			go ForkliftSimulation(&fork)
+			go ForkliftSimulation(fork)
 		}
 		for _, truck := range w.Trucks {
-			go TruckSimulation(&truck)
+			go TruckSimulation(truck)
 		}
 
 		w.decountLifeTime()
 		w.DumpTurn()
+		time.Sleep(500)
 	}
 
 	return nil

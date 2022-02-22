@@ -14,9 +14,9 @@ type Warehouse struct {
 	Size        Size
 	Lifetime    uint
 	CurrentTurn uint
-	Packages    []Package
-	Forklifts   []Forklift
-	Trucks      []Truck
+	Packages    []*Package
+	Forklifts   []*Forklift
+	Trucks      []*Truck
 }
 
 //NewWarehouse
@@ -54,25 +54,25 @@ func (p Position) Sub(pos Position) {
 	}
 }
 
-func (w *Warehouse) addTruck(t Truck) error {
+func (w *Warehouse) addTruck(t *Truck) error {
 	if w.Trucks == nil {
-		w.Trucks = make([]Truck, 0)
+		w.Trucks = make([]*Truck, 0)
 	}
 	w.Trucks = append(w.Trucks, t)
 	return nil
 }
 
-func (w *Warehouse) addPackage(p Package) error {
+func (w *Warehouse) addPackage(p *Package) error {
 	if w.Packages == nil {
-		w.Packages = make([]Package, 0)
+		w.Packages = make([]*Package, 0)
 	}
 	w.Packages = append(w.Packages, p)
 	return nil
 }
 
-func (w *Warehouse) addForklift(f Forklift) error {
+func (w *Warehouse) addForklift(f *Forklift) error {
 	if w.Forklifts == nil {
-		w.Forklifts = make([]Forklift, 0)
+		w.Forklifts = make([]*Forklift, 0)
 	}
 	w.Forklifts = append(w.Forklifts, f)
 	return nil

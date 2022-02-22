@@ -19,8 +19,8 @@ type Forklift struct {
 }
 
 //NewForklift
-func NewForklift(x, y uint, name string) Forklift {
-	return Forklift{
+func NewForklift(x, y uint, name string) *Forklift {
+	return &Forklift{
 		Pos: Position{
 			x: x,
 			y: y,

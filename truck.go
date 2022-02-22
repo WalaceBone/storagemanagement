@@ -19,8 +19,8 @@ type Truck struct {
 	Name            string
 }
 
-func NewTruck(cd, x, y, cap uint, name string) Truck {
-	return Truck{
+func NewTruck(cd, x, y, cap uint, name string) *Truck {
+	return &Truck{
 		Status:   WAITING,
 		Packages: nil,
 		Capacity: cap,

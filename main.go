@@ -33,5 +33,6 @@ func main() {
 	if err != nil {
 		fmt.Errorf("error : %s\n", err)
 	}
+	//warehouse.Dump()
 	Simulation(warehouse)
 }
