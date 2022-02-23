@@ -25,7 +25,7 @@ import (
 	packages := [1]Package{}
 	packages[0] = NewPackage(0, 0, 0, "Toto")
 
-	var w WarehouseCell
+	var w Cell
 
 	w.P = &packages[0]
 

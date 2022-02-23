@@ -14,16 +14,16 @@ type Warehouse struct {
 	Lifetime    int
 	CurrentTurn int
 	Graph       *ItemGraph
-	Map         [][]WarehouseCell
+	Map         [][]Cell
 	Packages    []Package
 	Forklifts   []Forklift
 	Trucks      []Truck
 }
 
-func initMap(x, y int) [][]WarehouseCell {
-	w := make([][]WarehouseCell, y)
+func initMap(x, y int) [][]Cell {
+	w := make([][]Cell, y)
 	for i := 0; i < x; i++ {
-		w[i] = make([]WarehouseCell, x)
+		w[i] = make([]Cell, x)
 	}
 	return w
 }
@@ -204,15 +204,10 @@ func (w Warehouse) SelectForkliftObjective(f *Forklift) {
 func (w *Warehouse) CreateGraph() {
 	for i := 0; i < w.Size.x; i++ {
 		for j := 0; j < w.Size.y; j++ {
-			w.Graph.AddNode(&Node{
-				p: Position{
-					x: i,
-					y: j,
-				},
-				F: nil,
-				T: nil,
-				P: nil,
-			})
+			w.Graph.AddNode(NewCell(Position{
+				x: i,
+				y: j,
+			}))
 		}
 	}
 }
