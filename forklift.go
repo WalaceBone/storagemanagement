@@ -12,10 +12,11 @@ const (
 )
 
 type Forklift struct {
-	Pos     Position
-	Package *Package
-	Status  FStatus
-	Name    string
+	Pos       Position
+	TargetPos Position
+	Package   *Package
+	Status    FStatus
+	Name      string
 }
 
 //NewForklift
@@ -24,6 +25,10 @@ func NewForklift(x, y int, name string) Forklift {
 		Pos: Position{
 			x: x,
 			y: y,
+		},
+		TargetPos: Position{
+			x: 0,
+			y: 0,
 		},
 		Package: nil,
 		Status:  WAIT,
@@ -49,6 +54,7 @@ func (f Forklift) Dump() {
 	fmt.Printf("\tName: %s\n", f.Name)
 	fmt.Printf("\tPosition: [%d,%d]\n", f.Pos.x, f.Pos.y)
 	fmt.Printf("\tStatus: %s\n", f.Status)
+	fmt.Printf("Target Pos: [%d,%d]\n", f.TargetPos.x, f.TargetPos.y)
 	fmt.Printf("\tPackage: \n")
 	if f.Package != nil {
 		f.Package.Dump()

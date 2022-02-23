@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 type WarehouseCell struct {
 	F *Forklift
@@ -162,4 +165,46 @@ func (w *Warehouse) move(d int, f *Forklift) error {
 		}
 	}
 	return nil
+}
+
+func (w Warehouse) SelectForkliftObjective(f *Forklift) {
+	if f.Package == nil {
+		dist := -1.0
+		target := 0
+		for i, p := range w.Packages {
+			xd := p.Pos.x - f.Pos.x
+			yd := p.Pos.y - f.Pos.y
+			if dist < 0 {
+				dist = math.Sqrt(float64(xd*xd + yd*yd))
+				target = i
+			} else {
+				if dist > math.Sqrt(float64(xd*xd+yd*yd)) {
+					dist = math.Sqrt(float64(xd*xd + yd*yd))
+					target = i
+				}
+			}
+		}
+		f.TargetPos = w.Packages[target].Pos
+	} else {
+		dist := -1.0
+		target := 0
+		for i, t := range w.Trucks {
+			xd := t.Pos.x - f.Pos.x
+			yd := t.Pos.y - f.Pos.y
+			if dist < 0 {
+				dist = math.Sqrt(float64(xd*xd + yd*yd))
+				target = i
+			} else {
+				if dist > math.Sqrt(float64(xd*xd+yd*yd)) {
+					dist = math.Sqrt(float64(xd*xd + yd*yd))
+					target = i
+				}
+			}
+		}
+		f.TargetPos = w.Trucks[target].Pos
+	}
+}
+
+func (w *Warehouse) FindPath(f *Forklift) {
+
 }
