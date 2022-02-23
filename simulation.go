@@ -12,14 +12,13 @@ func (w *Warehouse) Simulation() error {
 	r := rand.New(rand.NewSource(time.Now().Unix()))
 
 	for w.IsSimulationComplete() == false {
-		for i, f := range w.Forklifts {
+		for i, _ := range w.Forklifts {
 			w.SelectForkliftObjective(&w.Forklifts[i])
-			f.Dump()
 			w.move(r.Intn(4), &w.Forklifts[i])
 		}
 
 		w.decountLifeTime()
-		w.DumpMap()
+		w.DumpTurn()
 		fmt.Printf("\n")
 		time.Sleep(1 * time.Second)
 	}

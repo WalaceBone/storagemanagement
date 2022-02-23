@@ -27,13 +27,22 @@ func NewForklift(x, y int, name string) Forklift {
 			y: y,
 		},
 		TargetPos: Position{
-			x: 0,
-			y: 0,
+			x: -1,
+			y: -1,
 		},
 		Package: nil,
 		Status:  WAIT,
 		Name:    name,
 	}
+}
+
+func (f Forklift) IsTargetSelected() bool {
+	return f.TargetPos.x != -1 && f.TargetPos.y != -1
+}
+
+func (f *Forklift) ResetTarget() {
+	f.TargetPos.x = -1
+	f.TargetPos.y = -1
 }
 
 func (f *Forklift) move(d int) {

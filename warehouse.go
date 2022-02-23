@@ -5,12 +5,6 @@ import (
 	"math"
 )
 
-type WarehouseCell struct {
-	F *Forklift
-	T *Truck
-	P *Package
-}
-
 type Size struct {
 	x, y int
 }
