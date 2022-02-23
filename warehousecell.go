@@ -1,6 +1,7 @@
 package main
 
 type WarehouseCell struct {
+	p Position
 	F *Forklift
 	T *Truck
 	P *Package

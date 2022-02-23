@@ -13,6 +13,7 @@ type Warehouse struct {
 	Size        Size
 	Lifetime    int
 	CurrentTurn int
+	Graph       *ItemGraph
 	Map         [][]WarehouseCell
 	Packages    []Package
 	Forklifts   []Forklift
@@ -36,6 +37,7 @@ func NewWarehouse(x, y, lifetime int) Warehouse {
 		},
 		Lifetime:    lifetime,
 		CurrentTurn: 0,
+		Graph:       nil,
 		Map:         initMap(int(x), int(y)),
 		Packages:    nil,
 		Forklifts:   nil,
@@ -199,6 +201,18 @@ func (w Warehouse) SelectForkliftObjective(f *Forklift) {
 	}
 }
 
-func (w *Warehouse) FindPath(f *Forklift) {
-
+func (w *Warehouse) CreateGraph() {
+	for i := 0; i < w.Size.x; i++ {
+		for j := 0; j < w.Size.y; j++ {
+			w.Graph.AddNode(&Node{
+				p: Position{
+					x: i,
+					y: j,
+				},
+				F: nil,
+				T: nil,
+				P: nil,
+			})
+		}
+	}
 }

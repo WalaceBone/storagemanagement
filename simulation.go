@@ -2,23 +2,22 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
 	"time"
 )
 
 //Simulation Simulate the warehouse and it's actions
 func (w *Warehouse) Simulation() error {
 
-	r := rand.New(rand.NewSource(time.Now().Unix()))
+	//r := rand.New(rand.NewSource(time.Now().Unix()))
 
 	for w.IsSimulationComplete() == false {
 		for i, _ := range w.Forklifts {
 			w.SelectForkliftObjective(&w.Forklifts[i])
-			w.move(r.Intn(4), &w.Forklifts[i])
+			//w.move(r.Intn(4), &w.Forklifts[i])
 		}
 
 		w.decountLifeTime()
-		w.DumpTurn()
+		w.DumpMap()
 		fmt.Printf("\n")
 		time.Sleep(1 * time.Second)
 	}
