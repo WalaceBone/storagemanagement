@@ -50,6 +50,14 @@ func (t Truck) IsFull() (int, bool) {
 	return currentCap, currentCap < t.Capacity
 }
 
+func (t Truck) CanReceive(weight int) bool {
+	var total int
+	for _, p := range t.Packages {
+		total += p.Weight
+	}
+	return total + weight < t.Capacity
+}
+
 func (t *Truck) updateCD() {
 	if t.CurrentCooldown > 0 {
 		t.CurrentCooldown--

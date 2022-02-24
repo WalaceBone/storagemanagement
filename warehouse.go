@@ -55,7 +55,14 @@ func NewWarehouse(x, y, lifetime int) Warehouse {
 }
 
 func (w Warehouse) IsSimulationComplete() bool {
-	return w.CurrentTurn >= w.Lifetime
+	if len(w.Packages) == 0 {
+		fmt.Println("😎")
+		return true
+	} else if w.CurrentTurn >= w.Lifetime {
+		fmt.Println("🙂")
+		return true
+	}
+	return false
 }
 
 func (w *Warehouse) decountLifeTime() {
@@ -116,11 +123,9 @@ func (w Warehouse) DumpMap() {
 		for _, c := range cells {
 			if c.F != nil {
 				fmt.Printf("[F] ")
-			}
-			if c.T != nil {
+			} else if c.T != nil {
 				fmt.Printf("[T] ")
-			}
-			if c.P != nil {
+			} else if c.P != nil {
 				fmt.Printf("[P] ")
 			} else {
 				fmt.Printf("[ ] ")
@@ -174,36 +179,32 @@ func (w *Warehouse) move(d int, f *Forklift) error {
 
 func (w Warehouse) SelectForkliftObjective(f *Forklift) {
 	if f.Package == nil {
-		dist := -1.0
+		closest := -1.0
 		target := 0
 		for i, p := range w.Packages {
 			xd := p.Pos.x - f.Pos.x
 			yd := p.Pos.y - f.Pos.y
-			if dist < 0 {
-				dist = math.Sqrt(float64(xd*xd + yd*yd))
+			dist := math.Sqrt(float64(xd * xd + yd * yd))
+			if closest < 0 || closest > dist {
+				closest = dist
 				target = i
-			} else {
-				if dist > math.Sqrt(float64(xd*xd+yd*yd)) {
-					dist = math.Sqrt(float64(xd*xd + yd*yd))
-					target = i
-				}
 			}
 		}
 		f.TargetPos = w.Packages[target].Pos
 	} else {
-		dist := -1.0
+		closest := -1.0
 		target := 0
 		for i, t := range w.Trucks {
 			xd := t.Pos.x - f.Pos.x
 			yd := t.Pos.y - f.Pos.y
-			if dist < 0 {
-				dist = math.Sqrt(float64(xd*xd + yd*yd))
+			dist := math.Sqrt(float64(xd * xd + yd * yd))
+			if closest < 0 || closest > dist {
+				closest = dist
 				target = i
-			} else {
-				if dist > math.Sqrt(float64(xd*xd+yd*yd)) {
-					dist = math.Sqrt(float64(xd*xd + yd*yd))
-					target = i
-				}
+			}
+			if t.CanReceive(f.Package.Weight) == true {
+				target = i
+				break;
 			}
 		}
 		f.TargetPos = w.Trucks[target].Pos

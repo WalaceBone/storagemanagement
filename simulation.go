@@ -18,6 +18,7 @@ func (w *Warehouse) Simulation() error {
 			//w.move(r.Intn(4), &w.Forklifts[i])
 		}
 		w.decountLifeTime()
+		w.DumpTurn()
 		w.DumpMap()
 		fmt.Printf("\n")
 		time.Sleep(1 * time.Second)
