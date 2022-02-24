@@ -9,7 +9,7 @@ type Cell struct {
 }
 
 func (c Cell) IsEmpty() bool {
-	return c.F != nil && c.T != nil && c.P != nil
+	return c.F == nil && c.T == nil && c.P == nil
 }
 
 func NewCell(ID int, p Position) *Cell {

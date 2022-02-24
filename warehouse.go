@@ -121,14 +121,18 @@ func (w Warehouse) Dump() {
 func (w Warehouse) DumpMap() {
 	for _, cells := range w.Map {
 		for _, c := range cells {
-			if c.F != nil {
-				fmt.Printf("[F] ")
-			} else if c.T != nil {
-				fmt.Printf("[T] ")
-			} else if c.P != nil {
-				fmt.Printf("[P] ")
+			if w.Graph.nodes[c.ID].visited == true {
+				fmt.Printf("[#] ")
 			} else {
-				fmt.Printf("[ ] ")
+				if c.F != nil {
+					fmt.Printf("[F] ")
+				} else if c.T != nil {
+					fmt.Printf("[T] ")
+				} else if c.P != nil {
+					fmt.Printf("[P] ")
+				} else {
+					fmt.Printf("[ ] ")
+				}
 			}
 		}
 		fmt.Printf("\n")
@@ -192,7 +196,7 @@ func (w Warehouse) SelectForkliftObjective(f *Forklift) {
 		for i, p := range w.Packages {
 			xd := p.Pos.x - f.Pos.x
 			yd := p.Pos.y - f.Pos.y
-			dist := math.Sqrt(float64(xd * xd + yd * yd))
+			dist := math.Sqrt(float64(xd*xd + yd*yd))
 			if closest < 0 || closest > dist {
 				closest = dist
 				target = i
@@ -205,14 +209,14 @@ func (w Warehouse) SelectForkliftObjective(f *Forklift) {
 		for i, t := range w.Trucks {
 			xd := t.Pos.x - f.Pos.x
 			yd := t.Pos.y - f.Pos.y
-			dist := math.Sqrt(float64(xd * xd + yd * yd))
+			dist := math.Sqrt(float64(xd*xd + yd*yd))
 			if closest < 0 || closest > dist {
 				closest = dist
 				target = i
 			}
 			if t.CanReceive(f.Package.Weight) == true {
 				target = i
-				break;
+				break
 			}
 		}
 		f.TargetPos = w.Trucks[target].Pos
@@ -286,8 +290,24 @@ func (g *ItemGraph) GetNodeByID(ID int) *Node {
 	return nil
 }
 
-func (w Warehouse) FindPath(src, tgt int) map[int]int {
+func GetPath(src, tgt int, path map[int]int) []int {
+	spath := make([]int, 0)
+	tmp := tgt
+	spath = append(spath, tgt)
+	for tmp != src {
+		spath = append(spath, path[tmp])
+		tmp = path[tmp]
+	}
+	for i, j := 0, len(spath)-1; i < j; i, j = i+1, j-1 {
+		spath[i], spath[j] = spath[j], spath[i]
+	}
+	return spath
+}
 
+func (w Warehouse) FindPath(src, tgt int) []int {
+	for i, _ := range w.Graph.nodes {
+		w.Graph.nodes[i].Reset()
+	}
 	fmt.Println(src, tgt)
 	queue := list.New()
 	queue.PushBack(w.Graph.getNodeByID(src))
@@ -295,20 +315,21 @@ func (w Warehouse) FindPath(src, tgt int) map[int]int {
 	camefrom := make(map[int]int)
 
 	camefrom[src] = -1
-
+	w.Graph.GetNodeByID(src).Visited()
 	for queue.Len() > 0 {
 		current := queue.Front()
 		queue.Remove(queue.Front())
+
 		if current.Value.(*Node).ID == tgt {
-			return camefrom
+			return GetPath(src, tgt, camefrom)
 		}
-		/*	if current.p.x == tgt.p.x && current.p.y == tgt.p.y {
-			//return path
-		}*/
 		neighbours := w.Graph.edges[current.Value.(*Node).ID]
-		w.Graph.GetNodeByID(src).Visited()
 		for _, neighbour := range neighbours {
+			if w.GetCellById(neighbour.ID).IsEmpty() == false && neighbour.ID != tgt {
+				w.Graph.GetNodeByID(neighbour.ID).Visited()
+			}
 			if neighbour.visited == false {
+				w.Graph.GetNodeByID(neighbour.ID).Visited()
 				queue.PushBack(neighbour)
 				camefrom[neighbour.ID] = current.Value.(*Node).ID
 			}

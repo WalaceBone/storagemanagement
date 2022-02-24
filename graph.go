@@ -34,6 +34,10 @@ func (n *Node) Visited() {
 	n.visited = true
 }
 
+func (n *Node) Reset() {
+	n.visited = false
+}
+
 func (g *ItemGraph) AddNode(n int) {
 	g.lock.Lock()
 	if g.nodes == nil {
