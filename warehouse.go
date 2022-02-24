@@ -204,10 +204,7 @@ func (w Warehouse) SelectForkliftObjective(f *Forklift) {
 func (w *Warehouse) CreateGraph() {
 	for i := 0; i < w.Size.x; i++ {
 		for j := 0; j < w.Size.y; j++ {
-			w.Graph.AddNode(NewCell(Position{
-				x: i,
-				y: j,
-			}))
+			w.Graph.AddNode(&w.Map[i][j])
 		}
 	}
 }
