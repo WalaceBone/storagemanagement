@@ -42,6 +42,10 @@ func (t *Truck) loadPackage(p *Package) {
 	t.Packages = append(t.Packages, p)
 }
 
+func (t *Truck) empty() {
+	t.Packages = nil
+}
+
 func (t Truck) IsFull() (int, bool) {
 	var currentCap int
 	for _, p := range t.Packages {

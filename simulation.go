@@ -17,6 +17,9 @@ func (w *Warehouse) Simulation() error {
 			fmt.Println(node)
 			//w.move(r.Intn(4), &w.Forklifts[i])
 		}
+		for _, t := range w.Trucks {
+			w.TruckSimulation(&t)
+		}
 		w.decountLifeTime()
 		w.DumpTurn()
 		w.DumpMap()
@@ -32,5 +35,19 @@ func (w *Warehouse) ForkliftSimulation(f *Forklift) {
 }
 
 func (w *Warehouse) TruckSimulation(t *Truck) {
-	t.Dump()
+	packageCanFit := false
+	if t.Status == "GONE" {
+		t.empty()
+		t.updateStatus("WAITING")
+		return
+	}
+	for _, p := range w.Packages {
+		if t.CanReceive(p.Weight) == true {
+			packageCanFit = true
+		}
+	}
+	load, _ := t.IsFull()
+	if load > 0 && packageCanFit == false {
+		t.updateStatus("GONE")
+	}
 }
