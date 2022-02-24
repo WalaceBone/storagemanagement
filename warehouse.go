@@ -21,9 +21,15 @@ type Warehouse struct {
 }
 
 func initMap(x, y int) [][]Cell {
-	w := make([][]Cell, y)
+	w := make([][]Cell, x)
 	for i := 0; i < x; i++ {
-		w[i] = make([]Cell, x)
+		w[i] = make([]Cell, y)
+		for j := 0; j < y; j++ {
+			w[i][j] = *NewCell(Position{
+				x: i,
+				y: j,
+			})
+		}
 	}
 	return w
 }
@@ -37,7 +43,7 @@ func NewWarehouse(x, y, lifetime int) Warehouse {
 		},
 		Lifetime:    lifetime,
 		CurrentTurn: 0,
-		Graph:       nil,
+		Graph:       NewGraph(),
 		Map:         initMap(int(x), int(y)),
 		Packages:    nil,
 		Forklifts:   nil,
@@ -205,6 +211,27 @@ func (w *Warehouse) CreateGraph() {
 	for i := 0; i < w.Size.x; i++ {
 		for j := 0; j < w.Size.y; j++ {
 			w.Graph.AddNode(&w.Map[i][j])
+		}
+	}
+}
+
+func (w *Warehouse) CreateEdges() {
+	for i, node := range w.Graph.nodes {
+		//add edge up
+		if node.p.x-1 >= 0 {
+			w.Graph.AddEdge(w.Graph.nodes[i], w.Graph.GetNodeFromPosition(node.p.x-1, node.p.y))
+		}
+		//add edge down
+		if node.p.x+1 < w.Size.x {
+			w.Graph.AddEdge(w.Graph.nodes[i], w.Graph.GetNodeFromPosition(node.p.x+1, node.p.y))
+		}
+		//add edge left
+		if node.p.y-1 >= 0 {
+			w.Graph.AddEdge(w.Graph.nodes[i], w.Graph.GetNodeFromPosition(node.p.x, node.p.y-1))
+		}
+		//add edge right
+		if node.p.y+1 < w.Size.y {
+			w.Graph.AddEdge(w.Graph.nodes[i], w.Graph.GetNodeFromPosition(node.p.x, node.p.y+1))
 		}
 	}
 }

@@ -70,6 +70,8 @@ func main() {
 		warehouse.move(2, &warehouse.Forklifts[0])
 		warehouse.Forklifts[0].Dump()
 		warehouse.DumpMap()*/
+	warehouse.CreateGraph()
+	warehouse.CreateEdges()
 
 	warehouse.Simulation()
 }
