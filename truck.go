@@ -67,6 +67,7 @@ func (t *Truck) updateCD() {
 		t.CurrentCooldown--
 	} else {
 		t.CurrentCooldown = t.Cooldown
+		t.updateStatus("WAITING")
 	}
 }
 

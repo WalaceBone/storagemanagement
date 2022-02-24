@@ -31,16 +31,27 @@ func (w *Warehouse) Simulation() error {
 }
 
 func (w *Warehouse) ForkliftSimulation(f *Forklift) {
-	f.Dump()
+	if f.IsTargetSelected() == false && f.Package == nil {
+		w.SelectForkliftObjective(f)
+	}
+	if f.Pos.x == f.TargetPos.x && f.Pos.y == f.TargetPos.y {
+		if f.Package != nil {
+			f.updateStatus("LEAVE")
+		} else if f.Status == "LEAVE" {
+			f.Package = nil
+			// charge truck
+			f.updateStatus("WAITING")
+		}
+	}
 }
 
 func (w *Warehouse) TruckSimulation(t *Truck) {
-	packageCanFit := false
 	if t.Status == "GONE" {
 		t.empty()
-		t.updateStatus("WAITING")
+		t.updateCD()
 		return
 	}
+	packageCanFit := false
 	for _, p := range w.Packages {
 		if t.CanReceive(p.Weight) == true {
 			packageCanFit = true

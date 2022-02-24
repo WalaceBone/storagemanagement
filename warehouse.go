@@ -139,7 +139,15 @@ func (w Warehouse) DumpMap() {
 func (w Warehouse) DumpTurn() {
 	fmt.Printf("Turn %d\n", w.CurrentTurn)
 	for _, f := range w.Forklifts {
-		fmt.Printf("%s %s [%d,%d]\n", f.Name, f.Status, f.Pos.x, f.Pos.y)
+		switch f.Status {
+		case "GO":
+			fmt.Printf("%s %s [%d,%d]\n", f.Name, f.Status, f.Pos.x, f.Pos.y)
+		case "WAIT":
+			fmt.Printf("%s %s\n", f.Name, f.Status)
+		case "TAKE", "LEAVE":
+			color := f.Package.WeightToColor()
+			fmt.Printf("%s %s %s %s\n", f.Name, f.Status, f.Package.Name, color)
+		}
 	}
 	for _, t := range w.Trucks {
 		c, _ := t.IsFull()

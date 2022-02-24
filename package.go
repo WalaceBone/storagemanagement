@@ -30,6 +30,15 @@ func (p Package) updatePosition(x, y int) {
 	p.Pos.y += y
 }
 
+func (p Package) WeightToColor() string {
+	colors := map[int]string{
+		100: "YELLOW",
+		200: "GREEN",
+		500: "BLUE",
+	}
+	return colors[p.Weight]
+}
+
 func (p Package) Dump() {
 	fmt.Printf("\tName: %s\n", p.Name)
 	fmt.Printf("\tWeight: %d\n", p.Weight)

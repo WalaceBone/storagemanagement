@@ -36,6 +36,10 @@ func NewForklift(x, y int, name string) Forklift {
 	}
 }
 
+func (f *Forklift) updateStatus(s FStatus) {
+	f.Status = s
+}
+
 func (f Forklift) IsTargetSelected() bool {
 	return f.TargetPos.x != -1 && f.TargetPos.y != -1
 }
