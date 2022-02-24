@@ -17,8 +17,8 @@ func (w *Warehouse) Simulation() error {
 			fmt.Println(node)
 			//w.move(r.Intn(4), &w.Forklifts[i])
 		}
-		for _, t := range w.Trucks {
-			w.TruckSimulation(&t)
+		for i, _ := range w.Trucks {
+			w.TruckSimulation(&w.Trucks[i])
 		}
 		w.decountLifeTime()
 		w.DumpTurn()
