@@ -11,11 +11,12 @@ func (w *Warehouse) Simulation() error {
 	//r := rand.New(rand.NewSource(time.Now().Unix()))
 
 	for w.IsSimulationComplete() == false {
-		for i, _ := range w.Forklifts {
+		for i, f := range w.Forklifts {
 			w.SelectForkliftObjective(&w.Forklifts[i])
+			node := w.FindPath(w.Map[f.Pos.x][f.Pos.y].ID, w.Map[w.Forklifts[i].TargetPos.x][w.Forklifts[i].TargetPos.y].ID)
+			fmt.Println(node)
 			//w.move(r.Intn(4), &w.Forklifts[i])
 		}
-
 		w.decountLifeTime()
 		w.DumpMap()
 		fmt.Printf("\n")
@@ -23,10 +24,6 @@ func (w *Warehouse) Simulation() error {
 	}
 
 	return nil
-}
-
-func (w *Warehouse) findNextPackage(f *Forklift) {
-
 }
 
 func (w *Warehouse) ForkliftSimulation(f *Forklift) {

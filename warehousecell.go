@@ -1,18 +1,20 @@
 package main
 
 type Cell struct {
-	p Position
-	F *Forklift
-	T *Truck
-	P *Package
+	ID int
+	p  Position
+	F  *Forklift
+	T  *Truck
+	P  *Package
 }
 
 func (c Cell) IsEmpty() bool {
 	return c.F != nil && c.T != nil && c.P != nil
 }
 
-func NewCell(p Position) *Cell {
+func NewCell(ID int, p Position) *Cell {
 	return &Cell{
+		ID: ID,
 		p: Position{
 			x: p.x,
 			y: p.y,

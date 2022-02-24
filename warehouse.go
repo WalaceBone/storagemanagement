@@ -1,6 +1,7 @@
 package main
 
 import (
+	"container/list"
 	"fmt"
 	"math"
 )
@@ -22,13 +23,15 @@ type Warehouse struct {
 
 func initMap(x, y int) [][]Cell {
 	w := make([][]Cell, x)
+	id := 0
 	for i := 0; i < x; i++ {
 		w[i] = make([]Cell, y)
 		for j := 0; j < y; j++ {
-			w[i][j] = *NewCell(Position{
+			w[i][j] = *NewCell(id, Position{
 				x: i,
 				y: j,
 			})
+			id += 1
 		}
 	}
 	return w
@@ -44,7 +47,7 @@ func NewWarehouse(x, y, lifetime int) Warehouse {
 		Lifetime:    lifetime,
 		CurrentTurn: 0,
 		Graph:       NewGraph(),
-		Map:         initMap(int(x), int(y)),
+		Map:         initMap(x, y),
 		Packages:    nil,
 		Forklifts:   nil,
 		Trucks:      nil,
@@ -208,30 +211,99 @@ func (w Warehouse) SelectForkliftObjective(f *Forklift) {
 }
 
 func (w *Warehouse) CreateGraph() {
+	id := 0
 	for i := 0; i < w.Size.x; i++ {
 		for j := 0; j < w.Size.y; j++ {
-			w.Graph.AddNode(&w.Map[i][j])
+			w.Graph.AddNode(id)
+			id++
 		}
 	}
+}
+
+func (w Warehouse) GetCellById(id int) *Cell {
+	for i, cells := range w.Map {
+		for j, cell := range cells {
+			if cell.ID == id {
+				return &w.Map[i][j]
+			}
+		}
+	}
+	return nil
+}
+
+func (w Warehouse) GetCellIDFromPosition(x, y int) int {
+	for _, cells := range w.Map {
+		for _, cell := range cells {
+			if cell.p.x == x && cell.p.y == y {
+				return cell.ID
+			}
+		}
+	}
+	return -1
 }
 
 func (w *Warehouse) CreateEdges() {
 	for i, node := range w.Graph.nodes {
 		//add edge up
-		if node.p.x-1 >= 0 {
-			w.Graph.AddEdge(w.Graph.nodes[i], w.Graph.GetNodeFromPosition(node.p.x-1, node.p.y))
+		cell := w.GetCellById(node.ID)
+		if cell.p.x-1 >= 0 {
+			w.Graph.AddEdge(w.Graph.nodes[i].ID, w.GetCellIDFromPosition(cell.p.x-1, cell.p.y))
 		}
 		//add edge down
-		if node.p.x+1 < w.Size.x {
-			w.Graph.AddEdge(w.Graph.nodes[i], w.Graph.GetNodeFromPosition(node.p.x+1, node.p.y))
+		if cell.p.x+1 < w.Size.x {
+			w.Graph.AddEdge(w.Graph.nodes[i].ID, w.GetCellIDFromPosition(cell.p.x+1, cell.p.y))
 		}
 		//add edge left
-		if node.p.y-1 >= 0 {
-			w.Graph.AddEdge(w.Graph.nodes[i], w.Graph.GetNodeFromPosition(node.p.x, node.p.y-1))
+		if cell.p.y-1 >= 0 {
+			w.Graph.AddEdge(w.Graph.nodes[i].ID, w.GetCellIDFromPosition(cell.p.x, cell.p.y-1))
 		}
 		//add edge right
-		if node.p.y+1 < w.Size.y {
-			w.Graph.AddEdge(w.Graph.nodes[i], w.Graph.GetNodeFromPosition(node.p.x, node.p.y+1))
+		if cell.p.y+1 < w.Size.y {
+			w.Graph.AddEdge(w.Graph.nodes[i].ID, w.GetCellIDFromPosition(cell.p.x, cell.p.y+1))
 		}
 	}
+}
+
+func remove(slice []*Node, s int) []*Node {
+	return append(slice[:s], slice[s+1:]...)
+}
+
+func (g *ItemGraph) GetNodeByID(ID int) *Node {
+	for i, node := range g.nodes {
+		if node.ID == ID {
+			return &g.nodes[i]
+		}
+	}
+	return nil
+}
+
+func (w Warehouse) FindPath(src, tgt int) map[int]int {
+
+	fmt.Println(src, tgt)
+	queue := list.New()
+	queue.PushBack(w.Graph.getNodeByID(src))
+
+	camefrom := make(map[int]int)
+
+	camefrom[src] = -1
+
+	for queue.Len() > 0 {
+		current := queue.Front()
+		queue.Remove(queue.Front())
+		if current.Value.(*Node).ID == tgt {
+			return camefrom
+		}
+		/*	if current.p.x == tgt.p.x && current.p.y == tgt.p.y {
+			//return path
+		}*/
+		neighbours := w.Graph.edges[current.Value.(*Node).ID]
+		w.Graph.GetNodeByID(src).Visited()
+		for _, neighbour := range neighbours {
+			if neighbour.visited == false {
+				queue.PushBack(neighbour)
+				camefrom[neighbour.ID] = current.Value.(*Node).ID
+			}
+		}
+	}
+	return nil
 }
