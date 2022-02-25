@@ -9,24 +9,30 @@ const (
 )
 
 type Package struct {
-	ID     int
-	Loaded bool
-	Weight int
-	Pos    Position
-	Name   string
+	ID       int
+	Targeted bool
+	Loaded   bool
+	Weight   int
+	Pos      Position
+	Name     string
 }
 
 func NewPackage(ID, w, x, y int, name string) Package {
 	return Package{
-		ID:     ID,
-		Loaded: false,
-		Weight: w,
+		ID:       ID,
+		Targeted: false,
+		Loaded:   false,
+		Weight:   w,
 		Pos: Position{
 			x: x,
 			y: y,
 		},
 		Name: name,
 	}
+}
+
+func (p *Package) Target() {
+	p.Targeted = true
 }
 
 func (p Package) updatePosition(x, y int) {

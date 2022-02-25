@@ -191,7 +191,7 @@ func (w Warehouse) SelectForkliftTarget(f *Forklift) {
 		closest := -1.0
 		target := 0
 		for i, p := range w.Packages {
-			if !p.Loaded {
+			if !p.Loaded && !p.Targeted {
 				xd := p.Pos.x - f.Pos.x
 				yd := p.Pos.y - f.Pos.y
 				dist := math.Sqrt(float64(xd*xd + yd*yd))
@@ -203,6 +203,7 @@ func (w Warehouse) SelectForkliftTarget(f *Forklift) {
 		}
 		f.TargetPos = w.Packages[target].Pos
 		f.Target = w.Packages[target].ID
+		w.GetPackageByID(f.Target).Target()
 		//TODO
 		// change when nothing left to pick
 	} else {
