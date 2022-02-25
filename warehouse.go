@@ -63,6 +63,10 @@ func (w Warehouse) IsSimulationComplete() bool {
 		fmt.Println("🙂")
 		return true
 	}
+	if w.PackageLeft() == 0 {
+		fmt.Println("😎")
+		return true
+	}
 	return false
 }
 
