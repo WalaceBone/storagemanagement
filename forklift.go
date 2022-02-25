@@ -12,16 +12,26 @@ const (
 )
 
 type Forklift struct {
+	ID        int
+	Path      []int
 	Pos       Position
 	TargetPos Position
+	Target    int
 	Package   *Package
 	Status    FStatus
 	Name      string
 }
 
+//TODO
+// Change target for id
+// comparator position
+// getmapcellby position
+
 //NewForklift
-func NewForklift(x, y int, name string) Forklift {
+func NewForklift(ID, x, y int, name string) Forklift {
 	return Forklift{
+		ID:   ID,
+		Path: nil,
 		Pos: Position{
 			x: x,
 			y: y,
@@ -34,6 +44,21 @@ func NewForklift(x, y int, name string) Forklift {
 		Status:  WAIT,
 		Name:    name,
 	}
+}
+
+func (f *Forklift) Reset() {
+	f.ResetPath()
+	f.ResetTarget()
+	f.Package = nil
+	f.updateStatus(WAIT)
+}
+
+func (f *Forklift) ResetPath() {
+	f.Path = nil
+}
+
+func (f *Forklift) AddPath(path []int) {
+	f.Path = path
 }
 
 func (f *Forklift) updateStatus(s FStatus) {
@@ -74,4 +99,9 @@ func (f Forklift) Dump() {
 	} else {
 		fmt.Printf("empty\n")
 	}
+}
+
+func (f *Forklift) Move() {
+	f.ID = f.Path[0]
+	f.Path = remove(f.Path, 0)
 }

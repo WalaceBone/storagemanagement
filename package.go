@@ -9,13 +9,17 @@ const (
 )
 
 type Package struct {
+	ID     int
+	Loaded bool
 	Weight int
 	Pos    Position
 	Name   string
 }
 
-func NewPackage(w, x, y int, name string) Package {
+func NewPackage(ID, w, x, y int, name string) Package {
 	return Package{
+		ID:     ID,
+		Loaded: false,
 		Weight: w,
 		Pos: Position{
 			x: x,
@@ -43,4 +47,8 @@ func (p Package) Dump() {
 	fmt.Printf("\tName: %s\n", p.Name)
 	fmt.Printf("\tWeight: %d\n", p.Weight)
 	fmt.Printf("\tPosition: [%d,%d]\n", p.Pos.x, p.Pos.y)
+}
+
+func (p *Package) Load() {
+	p.Loaded = true
 }

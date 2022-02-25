@@ -12,6 +12,15 @@ func (c Cell) IsEmpty() bool {
 	return c.F == nil && c.T == nil && c.P == nil
 }
 
+func (c *Cell) resetP() {
+	c.P = nil
+}
+
+func (c *Cell) GetPackage() *Package {
+	defer c.resetP()
+	return c.P
+}
+
 func NewCell(ID int, p Position) *Cell {
 	return &Cell{
 		ID: ID,

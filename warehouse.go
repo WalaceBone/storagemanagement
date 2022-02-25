@@ -55,6 +55,7 @@ func NewWarehouse(x, y, lifetime int) Warehouse {
 }
 
 func (w Warehouse) IsSimulationComplete() bool {
+
 	if len(w.Packages) == 0 {
 		fmt.Println("😎")
 		return true
@@ -121,18 +122,14 @@ func (w Warehouse) Dump() {
 func (w Warehouse) DumpMap() {
 	for _, cells := range w.Map {
 		for _, c := range cells {
-			if w.Graph.nodes[c.ID].visited == true {
-				fmt.Printf("[#] ")
+			if c.F != nil {
+				fmt.Printf("[F] ")
+			} else if c.T != nil {
+				fmt.Printf("[T] ")
+			} else if c.P != nil {
+				fmt.Printf("[P] ")
 			} else {
-				if c.F != nil {
-					fmt.Printf("[F] ")
-				} else if c.T != nil {
-					fmt.Printf("[T] ")
-				} else if c.P != nil {
-					fmt.Printf("[P] ")
-				} else {
-					fmt.Printf("[ ] ")
-				}
+				fmt.Printf("[ ] ")
 			}
 		}
 		fmt.Printf("\n")
@@ -189,20 +186,25 @@ func (w *Warehouse) move(d int, f *Forklift) error {
 	return nil
 }
 
-func (w Warehouse) SelectForkliftObjective(f *Forklift) {
+func (w Warehouse) SelectForkliftTarget(f *Forklift) {
 	if f.Package == nil {
 		closest := -1.0
 		target := 0
 		for i, p := range w.Packages {
-			xd := p.Pos.x - f.Pos.x
-			yd := p.Pos.y - f.Pos.y
-			dist := math.Sqrt(float64(xd*xd + yd*yd))
-			if closest < 0 || closest > dist {
-				closest = dist
-				target = i
+			if !p.Loaded {
+				xd := p.Pos.x - f.Pos.x
+				yd := p.Pos.y - f.Pos.y
+				dist := math.Sqrt(float64(xd*xd + yd*yd))
+				if closest < 0 || closest > dist {
+					closest = dist
+					target = i
+				}
 			}
 		}
 		f.TargetPos = w.Packages[target].Pos
+		f.Target = w.Packages[target].ID
+		//TODO
+		// change when nothing left to pick
 	} else {
 		closest := -1.0
 		target := 0
@@ -220,6 +222,7 @@ func (w Warehouse) SelectForkliftObjective(f *Forklift) {
 			}
 		}
 		f.TargetPos = w.Trucks[target].Pos
+		f.Target = w.Trucks[target].ID
 	}
 }
 
@@ -277,7 +280,7 @@ func (w *Warehouse) CreateEdges() {
 	}
 }
 
-func remove(slice []*Node, s int) []*Node {
+func remove(slice []int, s int) []int {
 	return append(slice[:s], slice[s+1:]...)
 }
 
@@ -336,4 +339,14 @@ func (w Warehouse) FindPath(src, tgt int) []int {
 		}
 	}
 	return nil
+}
+
+func (w Warehouse) PackageLeft() int {
+	pleft := 0
+	for _, p := range w.Packages {
+		if !p.Loaded {
+			pleft++
+		}
+	}
+	return pleft
 }

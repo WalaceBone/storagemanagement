@@ -62,7 +62,8 @@ func (p Parser) parseSettings(lines []string) (*Warehouse, error) {
 				if err != nil {
 					return nil, err
 				}
-				w.addForklift(NewForklift(x, y, params[0]))
+				w.GetCellIDFromPosition(x, y)
+				w.addForklift(NewForklift(w.GetCellIDFromPosition(x, y), x, y, params[0]))
 				//p.warehouse.Forklifts = append(p.warehouse.Forklifts, NewForklift(pos.x, pos.y, params[0]))
 			case 4:
 				weight := parseWeight(params[3])
@@ -77,7 +78,7 @@ func (p Parser) parseSettings(lines []string) (*Warehouse, error) {
 				if err != nil {
 					return nil, err
 				}
-				w.addPackage(NewPackage(int(weight), x, y, params[0]))
+				w.addPackage(NewPackage(w.GetCellIDFromPosition(x, y), weight, x, y, params[0]))
 				//p.warehouse.Packages = append(p.warehouse.Packages, )
 			case 5:
 				capacity, err := parseInt(params[3])
@@ -93,7 +94,7 @@ func (p Parser) parseSettings(lines []string) (*Warehouse, error) {
 				if err != nil {
 					return nil, err
 				}
-				w.addTruck(NewTruck(cooldown, x, y, capacity, params[0]))
+				w.addTruck(NewTruck(w.GetCellIDFromPosition(x, y), cooldown, x, y, capacity, params[0]))
 				//p.warehouse.Trucks = append(p.warehouse.Trucks, )
 			}
 		}

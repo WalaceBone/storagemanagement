@@ -11,11 +11,8 @@ func (w *Warehouse) Simulation() error {
 	//r := rand.New(rand.NewSource(time.Now().Unix()))
 
 	for w.IsSimulationComplete() == false {
-		for i, f := range w.Forklifts {
-			w.SelectForkliftObjective(&w.Forklifts[i])
-			node := w.FindPath(w.Map[f.Pos.x][f.Pos.y].ID, w.Map[w.Forklifts[i].TargetPos.x][w.Forklifts[i].TargetPos.y].ID)
-			fmt.Println(node)
-			//w.move(r.Intn(4), &w.Forklifts[i])
+		for i, _ := range w.Forklifts {
+			w.ForkliftSimulation(&w.Forklifts[i])
 		}
 		for i, _ := range w.Trucks {
 			w.TruckSimulation(&w.Trucks[i])
@@ -26,39 +23,71 @@ func (w *Warehouse) Simulation() error {
 		fmt.Printf("\n")
 		time.Sleep(1 * time.Second)
 	}
-
 	return nil
 }
 
 func (w *Warehouse) ForkliftSimulation(f *Forklift) {
-	if f.IsTargetSelected() == false && f.Package == nil {
-		w.SelectForkliftObjective(f)
+
+	//Forklift ended action
+	fmt.Println(f)
+	if f.IsTargetSelected() == false && f.Status != LEAVE {
+		w.SelectForkliftTarget(f)
 	}
-	if f.Pos.x == f.TargetPos.x && f.Pos.y == f.TargetPos.y {
-		if f.Package != nil {
-			f.updateStatus("LEAVE")
-		} else if f.Status == "LEAVE" {
-			f.Package = nil
-			// charge truck
-			f.updateStatus("WAITING")
+
+	// Is at Target
+	if f.Path == nil && f.Status != LEAVE {
+		path := w.FindPath(f.ID, f.Target)
+		f.AddPath(path)
+	}
+
+	//TODO
+	// add check can move else calc path
+	if f.Path != nil && len(f.Path) > 0 {
+		if f.Package == nil && len(f.Path) == 1 {
+			f.Reset()
+			f.updateStatus(TAKE)
+			f.Package = w.GetCellById(f.Target).GetPackage()
+			w.GetCellById(f.ID).P = nil
+		} else {
+			f.updateStatus(GO)
+			oldCell := f.ID
+			f.Move()
+			f.Pos = w.GetCellById(f.ID).p
+			w.GetCellById(oldCell).F = nil
+			w.GetCellById(f.ID).F = f
 		}
+	}
+
+	//TODO
+	// getPackage on cell
+
+	// Forklift is at truck
+	if f.Package != nil && f.Pos.x == f.TargetPos.x && f.Pos.y == f.TargetPos.y && w.Map[f.TargetPos.x][f.TargetPos.y].T != nil {
+		if f.Package != nil && w.Map[f.TargetPos.x][f.TargetPos.y].T.CanReceive(f.Package.Weight) {
+			f.ResetPath()
+			f.ResetTarget()
+			f.updateStatus(LEAVE)
+		}
+	} else if f.Status == LEAVE {
+		w.GetCellById(f.Target).T.loadPackage(f.Package)
+		f.Reset()
 	}
 }
 
 func (w *Warehouse) TruckSimulation(t *Truck) {
-	if t.Status == "GONE" {
+	if t.Status == GONE {
 		t.empty()
 		t.updateCD()
 		return
 	}
 	packageCanFit := false
 	for _, p := range w.Packages {
-		if t.CanReceive(p.Weight) == true {
+		if t.CanReceive(p.Weight) == true && !p.Loaded {
 			packageCanFit = true
 		}
 	}
 	load, _ := t.IsFull()
 	if load > 0 && packageCanFit == false {
-		t.updateStatus("GONE")
+		t.updateStatus(GONE)
 	}
 }

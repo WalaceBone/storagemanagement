@@ -10,6 +10,7 @@ const (
 )
 
 type Truck struct {
+	ID              int
 	Status          TStatus
 	Packages        []*Package
 	Capacity        int
@@ -19,8 +20,9 @@ type Truck struct {
 	Name            string
 }
 
-func NewTruck(cd, x, y, cap int, name string) Truck {
+func NewTruck(ID, cd, x, y, cap int, name string) Truck {
 	return Truck{
+		ID:       ID,
 		Status:   WAITING,
 		Packages: nil,
 		Capacity: cap,
@@ -39,6 +41,7 @@ func (t *Truck) updateStatus(s TStatus) {
 }
 
 func (t *Truck) loadPackage(p *Package) {
+	p.Load()
 	t.Packages = append(t.Packages, p)
 }
 
@@ -59,7 +62,7 @@ func (t Truck) CanReceive(weight int) bool {
 	for _, p := range t.Packages {
 		total += p.Weight
 	}
-	return total + weight < t.Capacity
+	return total+weight < t.Capacity
 }
 
 func (t *Truck) updateCD() {
@@ -67,7 +70,7 @@ func (t *Truck) updateCD() {
 		t.CurrentCooldown--
 	} else {
 		t.CurrentCooldown = t.Cooldown
-		t.updateStatus("WAITING")
+		t.updateStatus(WAITING)
 	}
 }
 
