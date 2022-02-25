@@ -3,7 +3,7 @@ package main
 import "testing"
 
 func TestNewTruck(t *testing.T) {
-	truck := NewTruck(1000, 100, 100, 1000, "truckname")
+	truck := NewTruck(0, 1000, 100, 100, 1000, "truckname")
 	testTruck := Truck{
 		Status:   WAITING,
 		Packages: make([]*Package, 0),
@@ -43,7 +43,7 @@ func TestNewTruck(t *testing.T) {
 }
 
 func TestUpdateStatus(t *testing.T) {
-	truck := NewTruck(1000, 100, 100, 1000, "truckname")
+	truck := NewTruck(0, 1000, 100, 100, 1000, "truckname")
 	truck.updateStatus(GONE)
 	if truck.Status != GONE {
 		t.Errorf("Status not set")
@@ -51,8 +51,8 @@ func TestUpdateStatus(t *testing.T) {
 }
 
 func TestLoadPackage(t *testing.T) {
-	p := NewPackage(YELLOW, 100, 100, "package")
-	truck := NewTruck(1000, 100, 100, 1000, "truckname")
+	p := NewPackage(1, YELLOW, 100, 100, "package")
+	truck := NewTruck(0, 1000, 100, 100, 1000, "truckname")
 	l := len(truck.Packages)
 	truck.loadPackage(&p)
 	if l+1 != len(truck.Packages) {
