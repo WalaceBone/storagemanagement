@@ -40,7 +40,18 @@ func (w *Warehouse) ForkliftSimulation(f *Forklift) {
 		path := w.FindPath(f.ID, f.Target)
 		f.AddPath(path)
 	}
-
+	// Forklift is at truck
+	if f.Package != nil && f.Pos.x == f.TargetPos.x && f.Pos.y == f.TargetPos.y && w.Map[f.TargetPos.x][f.TargetPos.y].T != nil {
+		if f.Package != nil && w.Map[f.TargetPos.x][f.TargetPos.y].T.CanReceive(f.Package.Weight) {
+			f.ResetPath()
+			f.ResetTarget()
+			f.updateStatus(LEAVE)
+		}
+	} else if f.Status == LEAVE {
+		w.GetPackageByID(f.Package.ID).Load()
+		w.GetCellById(f.Target).T.loadPackage(f.Package)
+		f.Reset()
+	}
 	//TODO
 	// add check can move else calc path
 	if f.Path != nil && len(f.Path) > 0 {
@@ -59,22 +70,6 @@ func (w *Warehouse) ForkliftSimulation(f *Forklift) {
 			w.GetCellById(oldCell).F = nil
 			w.GetCellById(f.ID).F = f
 		}
-	}
-
-	//TODO
-	// getPackage on cell
-
-	// Forklift is at truck
-	if f.Package != nil && f.Pos.x == f.TargetPos.x && f.Pos.y == f.TargetPos.y && w.Map[f.TargetPos.x][f.TargetPos.y].T != nil {
-		if f.Package != nil && w.Map[f.TargetPos.x][f.TargetPos.y].T.CanReceive(f.Package.Weight) {
-			f.ResetPath()
-			f.ResetTarget()
-			f.updateStatus(LEAVE)
-		}
-	} else if f.Status == LEAVE {
-		w.GetPackageByID(f.Package.ID).Load()
-		w.GetCellById(f.Target).T.loadPackage(f.Package)
-		f.Reset()
 	}
 }
 
