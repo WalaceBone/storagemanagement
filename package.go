@@ -35,10 +35,10 @@ func (p *Package) Target() {
 	p.Targeted = true
 }
 
-func (p Package) updatePosition(x, y int) {
-	p.Pos.x += x
-	p.Pos.y += y
-}
+//func (p Package) updatePosition(x, y int) {
+//	p.Pos.x += x
+//	p.Pos.y += y
+//}
 
 func (p Package) WeightToColor() string {
 	colors := map[int]string{

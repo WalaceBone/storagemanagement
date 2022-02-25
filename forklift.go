@@ -74,7 +74,7 @@ func (f *Forklift) ResetTarget() {
 	f.TargetPos.y = -1
 }
 
-func (f *Forklift) move(d int) {
+/*func (f *Forklift) move(d int) {
 	switch d {
 	case 0:
 		f.Pos.Up()
@@ -85,7 +85,7 @@ func (f *Forklift) move(d int) {
 	case 3:
 		f.Pos.Left()
 	}
-}
+}*/
 
 //Dump
 func (f Forklift) Dump() {

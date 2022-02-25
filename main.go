@@ -36,5 +36,8 @@ func main() {
 	warehouse.CreateGraph()
 	warehouse.CreateEdges()
 
-	warehouse.Simulation()
+	err = warehouse.Simulation()
+	if err != nil {
+		return
+	}
 }

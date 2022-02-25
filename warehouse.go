@@ -156,35 +156,35 @@ func (w Warehouse) DumpTurn() {
 	}
 }
 
-func (w *Warehouse) move(d int, f *Forklift) error {
-	switch d {
-	case 0:
-		if f.Pos.x-1 >= 0 {
-			w.Map[f.Pos.x][f.Pos.y].F = nil
-			f.Pos.Up()
-			w.Map[f.Pos.x][f.Pos.y].F = f
-		}
-	case 1:
-		if f.Pos.y+1 < w.Size.y {
-			w.Map[f.Pos.x][f.Pos.y].F = nil
-			f.Pos.Right()
-			w.Map[f.Pos.x][f.Pos.y].F = f
-		}
-	case 2:
-		if f.Pos.x+1 < w.Size.x {
-			w.Map[f.Pos.x][f.Pos.y].F = nil
-			f.Pos.Down()
-			w.Map[f.Pos.x][f.Pos.y].F = f
-		}
-	case 3:
-		if f.Pos.y-1 >= 0 {
-			w.Map[f.Pos.x][f.Pos.y].F = nil
-			f.Pos.Left()
-			w.Map[f.Pos.x][f.Pos.y].F = f
-		}
-	}
-	return nil
-}
+//func (w *Warehouse) move(d int, f *Forklift) error {
+//	switch d {
+//	case 0:
+//		if f.Pos.x-1 >= 0 {
+//			w.Map[f.Pos.x][f.Pos.y].F = nil
+//			f.Pos.Up()
+//			w.Map[f.Pos.x][f.Pos.y].F = f
+//		}
+//	case 1:
+//		if f.Pos.y+1 < w.Size.y {
+//			w.Map[f.Pos.x][f.Pos.y].F = nil
+//			f.Pos.Right()
+//			w.Map[f.Pos.x][f.Pos.y].F = f
+//		}
+//	case 2:
+//		if f.Pos.x+1 < w.Size.x {
+//			w.Map[f.Pos.x][f.Pos.y].F = nil
+//			f.Pos.Down()
+//			w.Map[f.Pos.x][f.Pos.y].F = f
+//		}
+//	case 3:
+//		if f.Pos.y-1 >= 0 {
+//			w.Map[f.Pos.x][f.Pos.y].F = nil
+//			f.Pos.Left()
+//			w.Map[f.Pos.x][f.Pos.y].F = f
+//		}
+//	}
+//	return nil
+//}
 
 func (w Warehouse) SelectForkliftTarget(f *Forklift) {
 	if f.Package == nil {
@@ -338,10 +338,10 @@ func (w Warehouse) FindPath(src, tgt int) []int {
 		}
 		neighbours := w.Graph.edges[current.Value.(*Node).ID]
 		for _, neighbour := range neighbours {
-			if w.GetCellById(neighbour.ID).IsEmpty() == false && neighbour.ID != tgt {
+			if !w.GetCellById(neighbour.ID).IsEmpty() && neighbour.ID != tgt {
 				w.Graph.GetNodeByID(neighbour.ID).Visited()
 			}
-			if neighbour.visited == false {
+			if !neighbour.visited {
 				w.Graph.GetNodeByID(neighbour.ID).Visited()
 				queue.PushBack(neighbour)
 				camefrom[neighbour.ID] = current.Value.(*Node).ID

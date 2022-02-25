@@ -9,7 +9,7 @@ func (w *Warehouse) Simulation() error {
 
 	//r := rand.New(rand.NewSource(time.Now().Unix()))
 
-	for w.IsSimulationComplete() == false {
+	for !w.IsSimulationComplete() {
 		for i, _ := range w.Forklifts {
 			if w.PackageLeft() > 0 {
 				w.ForkliftSimulation(&w.Forklifts[i])
@@ -33,7 +33,7 @@ func (w *Warehouse) ForkliftSimulation(f *Forklift) {
 	// Trouver comme dire a une forklift de rien faire si pas de package dispo a prendre aka + de fork que de paquet
 	//Forklift ended action
 	//fmt.Println(f)
-	if f.IsTargetSelected() == false && f.Status != LEAVE {
+	if !f.IsTargetSelected() && f.Status != LEAVE {
 		w.SelectForkliftTarget(f)
 	}
 	if w.PackageTargeted() == len(w.Packages) && !f.IsTargetSelected() && f.Status != LEAVE {
@@ -87,12 +87,12 @@ func (w *Warehouse) TruckSimulation(t *Truck) {
 	}
 	packageCanFit := false
 	for _, p := range w.Packages {
-		if t.CanReceive(p.Weight) == true && !p.Loaded {
+		if t.CanReceive(p.Weight) && !p.Loaded {
 			packageCanFit = true
 		}
 	}
 	load, _ := t.IsFull()
-	if load > 0 && packageCanFit == false {
+	if load > 0 && !packageCanFit {
 		t.updateStatus(GONE)
 	}
 }
