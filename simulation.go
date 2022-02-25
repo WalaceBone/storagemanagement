@@ -28,7 +28,7 @@ func (w *Warehouse) Simulation() error {
 }
 
 func (w *Warehouse) ForkliftSimulation(f *Forklift) {
-	fmt.Println(w.PackageTargeted(), f.IsTargetSelected())
+	//fmt.Println(w.PackageTargeted(), f.IsTargetSelected())
 	//TODO
 	// Trouver comme dire a une forklift de rien faire si pas de package dispo a prendre aka + de fork que de paquet
 	//Forklift ended action
@@ -36,9 +36,9 @@ func (w *Warehouse) ForkliftSimulation(f *Forklift) {
 	if f.IsTargetSelected() == false && f.Status != LEAVE {
 		w.SelectForkliftTarget(f)
 	}
-	if w.PackageTargeted() == len(w.Packages) && !f.IsTargetSelected() {
+	/*if w.PackageTargeted() == len(w.Packages) && !f.IsTargetSelected() {
 		return
-	}
+	}*/
 	// Is at Target
 	if f.Path == nil && f.Status != LEAVE {
 		path := w.FindPath(f.ID, f.Target)
@@ -65,6 +65,8 @@ func (w *Warehouse) ForkliftSimulation(f *Forklift) {
 			if w.GetCellById(f.Target).P != nil {
 				f.Package = w.GetCellById(f.Target).GetPackage()
 				w.GetCellById(f.ID).P = nil
+			} else {
+				f.Reset()
 			}
 		} else {
 			f.updateStatus(GO)
