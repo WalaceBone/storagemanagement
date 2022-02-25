@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"time"
 )
 
 //Simulation Simulate the warehouse and it's actions
@@ -12,7 +11,9 @@ func (w *Warehouse) Simulation() error {
 
 	for w.IsSimulationComplete() == false {
 		for i, _ := range w.Forklifts {
-			w.ForkliftSimulation(&w.Forklifts[i])
+			if w.PackageLeft() > 0 {
+				w.ForkliftSimulation(&w.Forklifts[i])
+			}
 		}
 		for i, _ := range w.Trucks {
 			w.TruckSimulation(&w.Trucks[i])
@@ -21,7 +22,7 @@ func (w *Warehouse) Simulation() error {
 		w.DumpTurn()
 		w.DumpMap()
 		fmt.Printf("\n")
-		time.Sleep(1 * time.Second)
+		//time.Sleep(1 * time.Second)
 	}
 	return nil
 }
@@ -46,8 +47,10 @@ func (w *Warehouse) ForkliftSimulation(f *Forklift) {
 		if f.Package == nil && len(f.Path) == 1 {
 			f.Reset()
 			f.updateStatus(TAKE)
-			f.Package = w.GetCellById(f.Target).GetPackage()
-			w.GetCellById(f.ID).P = nil
+			if w.GetCellById(f.Target).P != nil {
+				f.Package = w.GetCellById(f.Target).GetPackage()
+				w.GetCellById(f.ID).P = nil
+			}
 		} else {
 			f.updateStatus(GO)
 			oldCell := f.ID
