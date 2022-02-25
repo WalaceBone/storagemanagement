@@ -36,9 +36,9 @@ func (w *Warehouse) ForkliftSimulation(f *Forklift) {
 	if f.IsTargetSelected() == false && f.Status != LEAVE {
 		w.SelectForkliftTarget(f)
 	}
-	/*if w.PackageTargeted() == len(w.Packages) && !f.IsTargetSelected() {
+	if w.PackageTargeted() == len(w.Packages) && !f.IsTargetSelected() && f.Status != LEAVE {
 		return
-	}*/
+	}
 	// Is at Target
 	if f.Path == nil && f.Status != LEAVE {
 		path := w.FindPath(f.ID, f.Target)
