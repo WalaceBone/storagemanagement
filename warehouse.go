@@ -311,7 +311,7 @@ func GetPath(src, tgt int, path map[int]int) []int {
 	spath := make([]int, 0)
 	tmp := tgt
 	spath = append(spath, tgt)
-	for tmp != src {
+	for path[tmp] != src {
 		spath = append(spath, path[tmp])
 		tmp = path[tmp]
 	}
