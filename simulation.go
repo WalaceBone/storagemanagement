@@ -20,7 +20,7 @@ func (w *Warehouse) Simulation() error {
 		}
 		w.decountLifeTime()
 		w.DumpTurn()
-		w.DumpMap()
+		//w.DumpMap()
 		fmt.Printf("\n")
 		//time.Sleep(1 * time.Second)
 	}
@@ -30,7 +30,7 @@ func (w *Warehouse) Simulation() error {
 func (w *Warehouse) ForkliftSimulation(f *Forklift) {
 
 	//Forklift ended action
-	fmt.Println(f)
+	//fmt.Println(f)
 	if f.IsTargetSelected() == false && f.Status != LEAVE {
 		w.SelectForkliftTarget(f)
 	}
