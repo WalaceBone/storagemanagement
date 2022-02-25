@@ -28,13 +28,17 @@ func (w *Warehouse) Simulation() error {
 }
 
 func (w *Warehouse) ForkliftSimulation(f *Forklift) {
-
+	fmt.Println(w.PackageTargeted(), f.IsTargetSelected())
+	//TODO
+	// Trouver comme dire a une forklift de rien faire si pas de package dispo a prendre aka + de fork que de paquet
 	//Forklift ended action
 	//fmt.Println(f)
 	if f.IsTargetSelected() == false && f.Status != LEAVE {
 		w.SelectForkliftTarget(f)
 	}
-
+	if w.PackageTargeted() == len(w.Packages) && !f.IsTargetSelected() {
+		return
+	}
 	// Is at Target
 	if f.Path == nil && f.Status != LEAVE {
 		path := w.FindPath(f.ID, f.Target)

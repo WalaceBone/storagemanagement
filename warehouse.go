@@ -351,6 +351,16 @@ func (w Warehouse) FindPath(src, tgt int) []int {
 	return nil
 }
 
+func (w Warehouse) PackageTargeted() int {
+	pleft := 0
+	for _, p := range w.Packages {
+		if p.Targeted {
+			pleft++
+		}
+	}
+	return pleft
+}
+
 func (w Warehouse) PackageLeft() int {
 	pleft := 0
 	for _, p := range w.Packages {
