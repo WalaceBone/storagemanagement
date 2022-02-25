@@ -56,15 +56,11 @@ func NewWarehouse(x, y, lifetime int) Warehouse {
 
 func (w Warehouse) IsSimulationComplete() bool {
 
-	if len(w.Packages) == 0 {
+	if len(w.Packages) == 0 || w.PackageLeft() == 0 {
 		fmt.Println("😎")
 		return true
 	} else if w.CurrentTurn >= w.Lifetime {
 		fmt.Println("🙂")
-		return true
-	}
-	if w.PackageLeft() == 0 {
-		fmt.Println("😎")
 		return true
 	}
 	return false
