@@ -41,7 +41,6 @@ func (t *Truck) updateStatus(s TStatus) {
 }
 
 func (t *Truck) loadPackage(p *Package) {
-	p.Load()
 	t.Packages = append(t.Packages, p)
 }
 

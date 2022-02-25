@@ -236,6 +236,15 @@ func (w *Warehouse) CreateGraph() {
 	}
 }
 
+func (w *Warehouse) GetPackageByID(ID int) *Package {
+	for i, p := range w.Packages {
+		if p.ID == ID {
+			return &w.Packages[i]
+		}
+	}
+	return nil
+}
+
 func (w Warehouse) GetCellById(id int) *Cell {
 	for i, cells := range w.Map {
 		for j, cell := range cells {

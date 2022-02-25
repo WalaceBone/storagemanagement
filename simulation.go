@@ -72,6 +72,7 @@ func (w *Warehouse) ForkliftSimulation(f *Forklift) {
 			f.updateStatus(LEAVE)
 		}
 	} else if f.Status == LEAVE {
+		w.GetPackageByID(f.Package.ID).Load()
 		w.GetCellById(f.Target).T.loadPackage(f.Package)
 		f.Reset()
 	}
