@@ -217,7 +217,7 @@ func (w Warehouse) SelectForkliftTarget(f *Forklift) {
 				closest = dist
 				target = i
 			}
-			if t.CanReceive(f.Package.Weight) == true {
+			if t.CanReceive(f.Package.Weight) {
 				target = i
 				break
 			}
@@ -318,7 +318,7 @@ func GetPath(src, tgt int, path map[int]int) []int {
 }
 
 func (w Warehouse) FindPath(src, tgt int) []int {
-	for i, _ := range w.Graph.nodes {
+	for i := range w.Graph.nodes {
 		w.Graph.nodes[i].Reset()
 	}
 	fmt.Println(src, tgt)

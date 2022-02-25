@@ -16,7 +16,7 @@ linters:
     - "exportloopref"
     - "structcheck"
     - "nakedret"
-    - "ineffassign"
+    #- "ineffassign"
     - "unconvert"
     - "unparam"
     - "bodyclose"

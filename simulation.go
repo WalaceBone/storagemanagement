@@ -10,12 +10,12 @@ func (w *Warehouse) Simulation() error {
 	//r := rand.New(rand.NewSource(time.Now().Unix()))
 
 	for !w.IsSimulationComplete() {
-		for i, _ := range w.Forklifts {
+		for i := range w.Forklifts {
 			if w.PackageLeft() > 0 {
 				w.ForkliftSimulation(&w.Forklifts[i])
 			}
 		}
-		for i, _ := range w.Trucks {
+		for i := range w.Trucks {
 			w.TruckSimulation(&w.Trucks[i])
 		}
 		w.decountLifeTime()

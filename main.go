@@ -31,7 +31,7 @@ func main() {
 	parser := Parser{}
 	warehouse, err := parser.parseSettings(lines)
 	if err != nil {
-		fmt.Errorf("error : %s\n", err)
+		_ = fmt.Errorf("error : %s\n", err)
 	}
 	warehouse.CreateGraph()
 	warehouse.CreateEdges()
