@@ -20,7 +20,7 @@ func (w *Warehouse) Simulation() error {
 		}
 		w.decountLifeTime()
 		w.DumpTurn()
-		w.DumpMap()
+		//w.DumpMap()
 		fmt.Printf("\n")
 		//time.Sleep(1 * time.Second)
 	}

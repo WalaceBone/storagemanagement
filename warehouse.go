@@ -321,7 +321,7 @@ func (w Warehouse) FindPath(src, tgt int) []int {
 	for i := range w.Graph.nodes {
 		w.Graph.nodes[i].Reset()
 	}
-	fmt.Println(src, tgt)
+	//fmt.Println(src, tgt)
 	queue := list.New()
 	queue.PushBack(w.Graph.getNodeByID(src))
 
