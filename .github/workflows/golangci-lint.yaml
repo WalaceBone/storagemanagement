@@ -16,7 +16,7 @@ linters:
     - "exportloopref"
     - "structcheck"
     - "nakedret"
-    #- "ineffassign"
+    - "ineffassign"
     - "unconvert"
     - "unparam"
     - "bodyclose"
@@ -26,7 +26,7 @@ linters:
     # level 2 : previous step but more strict.
     - "megacheck"
     # level 3 : error handling.
-    #- "errcheck"
+    - "errcheck"
     - "goerr113"
     - "wrapcheck"
     - "errchkjson"
@@ -36,7 +36,7 @@ linters:
     - "maintidx"
     - "gocognit"
     - "gocyclo"
-    #- "deadcode"
+    - "deadcode"
     - "dupl"
     # level 5 : documentation.
     - "revive"

@@ -92,6 +92,9 @@ func (p Parser) parseSettings(lines []string) (*Warehouse, error) {
 					return nil, err
 				}
 				cooldown, err := parseInt(params[4])
+				if err != nil {
+					return nil, err
+				}
 				x, err := parseInt(params[1])
 				if err != nil {
 					return nil, err
