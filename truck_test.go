@@ -6,7 +6,7 @@ func TestNewTruck(t *testing.T) {
 	truck := NewTruck(0, 1000, 100, 100, 1000, "truckname")
 	testTruck := Truck{
 		Status:   WAITING,
-		Packages: make([]*Package, 0),
+		Packages: nil,
 		Capacity: 1000,
 		Pos: Position{
 			x: 100,
@@ -19,7 +19,7 @@ func TestNewTruck(t *testing.T) {
 	if truck.Name != testTruck.Name {
 		t.Errorf("Name not equal")
 	}
-	if truck.Packages == nil || len(truck.Packages) != len(testTruck.Packages) {
+	if truck.Packages != nil || len(truck.Packages) != len(testTruck.Packages) {
 		t.Errorf("Package not initalized")
 	}
 	if truck.Cooldown != testTruck.Cooldown {
